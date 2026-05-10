@@ -16,7 +16,7 @@ def setup_logger():
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
-        file_handler = logging.FileHandler(log_dir / "train.log", encoding='utf-8')
+        file_handler = logging.FileHandler(log_dir / "log_baseline.log", encoding='utf-8')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
     return logger

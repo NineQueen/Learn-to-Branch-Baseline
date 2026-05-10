@@ -9,7 +9,7 @@ from src.dataset import *
 from src.models import *
 import torch.nn.functional as F
 
-def main(lr,num_epoch):
+def main(lr,num_epoch,patience):
     if lr<=0 or num_epoch<=0:
         logger.error("Config Error")
         raise ValueError("Config Error")
@@ -36,16 +36,26 @@ def main(lr,num_epoch):
     print(action_distribution)
     
     optimizer = torch.optim.Adam(policy.parameters(), lr=lr)
+    best_loss = float('inf')
+    counter = 0
+    params_path = "src/trained_params.pkl"
+
     for epoch in range(num_epoch):
         print(f"Epoch {epoch+1}")
 
         train_loss, train_acc = process(policy, train_loader, get_device(), optimizer)
-        logger.info(f"Train loss: {train_loss:0.3f}, accuracy {train_acc:0.3f}")
-
         valid_loss, valid_acc = process(policy, valid_loader, get_device(), None)
-        logger.info(f"Valid loss: {valid_loss:0.3f}, accuracy {valid_acc:0.3f}")
 
-    torch.save(policy.state_dict(), "trained_params.pkl")
+        if valid_loss < best_loss:
+            best_loss = valid_loss
+            counter = 0
+            torch.save(policy.state_dict(),params_path)
+            logger.info(f"Model improved. Train loss: {train_loss:0.3f}, accuracy {train_acc:0.3f} Valid loss: {valid_loss:0.3f}, accuracy {valid_acc:0.3f}")
+        else:
+            counter += 1
+            if counter >= patience:
+                logger.info(f"Early stopping triggered! Training finished. Total epoch: {epoch}")
+                break
     logger.info("Training End")
 
 if __name__ == "__main__":
@@ -53,5 +63,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description= "Training Script")
     parser.add_argument("--lr", type=float, default = cfg.learning_rate, help = f"Learning Rate. Default: {cfg.learning_rate}")
     parser.add_argument("--epoch", type=int, default = cfg.nb_epochs, help = f"The number of epoch. Default: {cfg.nb_epochs}")
+    parser.add_argument("--patience", type=int, default = cfg.early_stop_patience, help = f"Early stop patience round. Default: {cfg.early_stop_patience}")
     args = parser.parse_args()
-    main(lr = args.lr,num_epoch= args.epoch)
+    main(lr = args.lr,num_epoch= args.epoch,patience = args.patience)

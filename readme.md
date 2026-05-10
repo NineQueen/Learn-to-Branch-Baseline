@@ -6,7 +6,7 @@ For my URIS Project only.
 
 ## Environment
 
-[![Conda-Forge platforms](https://img.shields.io/conda/pn/conda-forge/ecole?logo=conda-forge)](https://anaconda.org/conda-forge/ecole)
+[![Conda-Forge platforms](https://img.shields.io/conda/pn/conda-forge/ecole?logo=conda-forge)](https://anaconda.org/conda-forge)
 
 ```bash
 conda env create -f environment.yml
@@ -51,6 +51,10 @@ python scripts/train.py --lr 0.001 --epoch 50
     - Default: `nb_epochs` = 50
     - Type: `int`
     - Description: Number of epochs. The epoch should not be set overly large. This baseline version does not include early stopping mechanism.
+- `--patience`
+    - Default: `early_stop_patience` = 10
+    - Type: `int`
+    - Description: Early stop patience round.
 
 ### Evaluation
 Retrieve model parameters from `src/trained_params.pkl` and load the GNN model. Generate a new MILP problem using `SetCoverGenerator`. Compare the performance of SCIP’s traditional solver and the GNN solver.

@@ -1,4 +1,4 @@
-name: ecole_env
+name: ecoleEnv
 channels:
   - pyg
   - pytorch
@@ -15,7 +15,7 @@ dependencies:
   - scikit-learn<1.0
   - pytorch
   - pyg
-  - pipe
+  - pip
   - pyyaml
   - pip:
     - scikit-optimize==0.8.1

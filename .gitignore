@@ -1,0 +1,3 @@
+scripts/evaluate.ipynb
+logs/*.log
+src/__pycache__/
